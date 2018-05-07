@@ -15,13 +15,13 @@ function _write {
   [[ "${#INPUT_DATA}" -gt "${SIZE}" ]] \
     && print_failure "Data larger than index size (${SIZE})"
 
-
-  PADDING="$(( ${SIZE} - ${#INPUT_DATA} ))"
-  [[ "${#INPUT_DATA}" -lt "${SIZE}" ]] \
-    && print_info "Padding with ${PADDING} null bytes to fit ${SIZE} bytes"
-
   printf "${INPUT_DATA}" > "${INPUT_FILE}"
-  head -c ${PADDING} < /dev/zero >> "${INPUT_FILE}"
+
+  [[ "${#INPUT_DATA}" -lt "${SIZE}" ]] \
+    && PADDING="$(( ${SIZE} - ${#INPUT_DATA} ))" \
+    && print_info "Padding with ${PADDING} null bytes to fit ${SIZE} bytes" \
+    && head -c ${PADDING} < /dev/zero >> "${INPUT_FILE}"
+
   print_info "${SIZE} bytes of data written to buffer ${INPUT_FILE}"
 
   tpm2_nvwrite -x "${INDEX}" -a "${AUTHORIZATION}" "${INPUT_FILE}" -P "${OWNERPASS}" \
