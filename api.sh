@@ -30,9 +30,9 @@ function _write {
 }
 
 function _read {
-  tpm2_nvread -x "${INDEX}" -a "${AUTHORIZATION}" -s "${SIZE}" -P "${OWNERPASS}" -f "${OUTPUT_FILE}" \
-    && print_success "Read ${SIZE} bytes from index ${INDEX} to ${OUTPUT_FILE}" \
-    || print_failure "Failed to read ${SIZE} bytes from index ${INDEX} to ${OUTPUT_FILE}"
+  tpm2_nvread -x "${INDEX}" -a "${AUTHORIZATION}" -s "${SIZE}" -P "${OWNERPASS}" \
+    && print_success "Read ${SIZE} bytes from index ${INDEX}" \
+    || print_failure "Failed to read ${SIZE} bytes from index ${INDEX}"
 }
 
 function _check {
