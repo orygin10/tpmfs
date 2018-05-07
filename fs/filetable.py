@@ -100,7 +100,10 @@ class Filetable:
         >>> get_metadata('non_existing_file')
         False
         """
-        pass
+        for _file in self.files:
+            if _file['filename'] == filename:
+                return _file
+        return False
 
 ##################################
 

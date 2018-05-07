@@ -17,18 +17,23 @@ def test():
 
     with Filetable() as ft:
         # Test list_files() with empty table
-        assert ft.list_files()==False, "Listing all files should return False if table is empty"
+        assert not ft.list_files(), "Listing all files should return False if table is empty"
 
         # Test add_file
-        assert ft.add_file('data4.txt', 2004)==True, "Adding a non-existing file should return True"
-        assert ft.add_file('data4.txt', 2004)==False, "Adding an already existing file should return False"
+        assert ft.add_file('data4.txt', 2004), "Adding a non-existing file should return True"
+        assert not ft.add_file('data4.txt', 2004), "Adding an already existing file should return False"
 
         # Test list_files
-        assert ft.list_files()==True, "Listing all files should return True"
+        assert ft.list_files(), "Listing all files should return True"
 
         # Test remove_file
-        assert ft.remove_file('data4.txt')==True, "Removing an existing file should return True"
-        assert ft.remove_file('data4.txt')==False, "Removing a non-existing file should return False"
+        assert ft.remove_file('data4.txt'), "Removing an existing file should return True"
+        assert not ft.remove_file('data4.txt'), "Removing a non-existing file should return False"
+
+        # Test get_metadata
+        assert not ft.get_metadata('data.txt'), "Getting metadata for an non-existing file should return False"
+        ft.add_file('data.txt', 200)
+        assert ft.get_metadata('data.txt'), "Getting metadata for an existing file should not return False"
 
     #print launch("./tpm.sh -r -i 0x1240000")
     
