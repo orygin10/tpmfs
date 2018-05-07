@@ -4,6 +4,8 @@ You didn't misread. It's not tmpfs. It's tpmfs !
 
 Use your TPM chip at its fullest extent ! Store up to 32 MiB of raw data.
 
+Maximum throughput is up to 48 Kbit/s !
+
 ## My specs
 - Laptop : `UX510UW`
 - TPM Version : `2.0`
