@@ -67,3 +67,15 @@ Use your TPM chip at its fullest extent ! Store up to 32 MiB of raw data.
 
 ```
 
+## Again
+
+```
+                      _define        tpm2_nvdefine
+     push             _write         tpm2_nvwrite        /dev/tpm0
+
++-------------+   +-------------+   +-------------+   +-------------+
+|             |   |             |   |             |   |             |
+|    fs.py    +--->   tpm.sh    +--->  tpm2-tools +--->  TPM Chip   |
+|             |   |             |   |             |   |             |
++-------------+   +-------------+   +-------------+   +-------------+
+```
