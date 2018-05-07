@@ -61,12 +61,13 @@ while getopts ":drw:ui:hp:s:" opt; do
 done
 
 function print_usage {
-  printf "Usage: %s -[ s|r|w|u ] -i INDEX [-d DATA] \n" "$0" >&2
-  printf "   -d    Define INDEX with attribute WORD on TPM Chip\n" >&2
-  printf "   -r    Read 2048 bytes from INDEX\n" >&2
-  printf "   -w    Write DATA (up to 2048 bytes) to INDEX\n" >&2
+  printf "Usage: %s [ -d|r|u -i INDEX ] [ -w DATA -i INDEX ] [ -p ] [ -s ]\n" "$0" >&2
+  printf "   -d    Define INDEX on TPM Chip (Attribute and Authorization in common.sh)\n" >&2
+  printf "   -r    Read SIZE bytes from INDEX\n" >&2
+  printf "   -w    Write DATA  (SIZE bytes block) to INDEX\n" >&2
   printf "   -u    Release INDEX\n" >&2
   printf "   -i    Index; 0x1240000 for exemple\n" >&2
+  printf "   -s    Index size in bytes (default 2048)\n" >&2
   printf "   -p    Owner password. Omit to ask\n" >&2
   printf "   -h    Print this help\n" >&2
   exit 1
