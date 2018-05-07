@@ -21,8 +21,18 @@ class Filetable:
 ##################################
         
     def list_files(self):
-        """Make a list with all files in filetable.yml"""
-        """Returns True if there are files, else return False"""
+        """Make a list with all files in filetable.yml
+        Returns True if there are files, else return False
+        e.g:
+        >>> len(self.files)
+        2
+        >>> list_files()
+        True
+        >>> len(self.files)
+        0
+        >>> list_files()
+        False
+        """
         if len(self.files) == 0:
             return False
         header = self.files[0].keys()
@@ -32,8 +42,14 @@ class Filetable:
         return True
 
     def add_file(self, filename, size_bytes):
-        """Add file to filetable.yml"""
-        """Returns True if file successfully added, False if file already exists"""
+        """Add file to filetable.yml
+        Returns True if file successfully added, False if file already exists
+        e.g:
+        >>> add_file('not_existing.txt')
+        True
+        >>> add_file('existing.txt')
+        False
+        """
         block_size = 2048
 
         for f in self.files:
@@ -54,8 +70,15 @@ class Filetable:
         return True
 
     def remove_file(self, filename):
-        """Remove file from filetable.yml"""
-        """Return True if file successfully removed, False if file is not found or table empty"""
+        """Remove file from filetable.yml
+        Return True if file successfully removed, False if file is not found or table empty
+        e.g:
+        >>> remove_file('existing.txt')
+        True
+        >>> remove_file('not_existing.txt')
+        False
+        """
+
         if len(self.files) == 0:
             return False
 
@@ -67,6 +90,17 @@ class Filetable:
 
         print_failure("File %s was not found" % filename)
         return False
+
+    def get_metadata(self, filename):
+        """Retrieves file metadata
+        Returns a dict containing file metadata if found, else return False
+        e.g:
+        >>> get_metadata('an_existing_file')
+        {'size_b': 1, 'size_h': 1024, 'filename': 'an_existing_file', 'offset': 0, 'id': 0}
+        >>> get_metadata('non_existing_file')
+        False
+        """
+        pass
 
 ##################################
 
