@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 # TPM CONSTANTS
-readonly NV_WORD="0x2000A"
-readonly AUTH_OWNER="0x40000001"
+readonly TPM_RH_OWNER="0x40000001"
 
 # TPM VARIABLES
-AUTHORIZATION="${AUTH_OWNER}"
-ATTRIBUTE="${NV_WORD}"
+AUTHORIZATION="${TPM_RH_OWNER}"
+ATTRIBUTE="0x2000A" # ownerwrite|policywrite|ownerread (0xA0002)
 INPUT_FILE="${CUR_DIR}/nv.data"
 
 LANG=C LC_ALL=C # Needed to measure size of str in bytes 
