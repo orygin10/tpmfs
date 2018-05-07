@@ -62,7 +62,7 @@ class Filetable:
             offset = lastfile['offset'] + lastfile['size_b']
         except IndexError: # File table empty
             _id = 0
-            offset = 0
+            offset = 1 # Offset 0 is 0x1500000 (Filetable index)
         finally:
             size = int(size_bytes / block_size) + (size_bytes % block_size > 0)
 

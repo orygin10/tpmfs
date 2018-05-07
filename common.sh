@@ -6,7 +6,6 @@ readonly TPM_RH_OWNER="0x40000001"
 # TPM VARIABLES
 AUTHORIZATION="${TPM_RH_OWNER}"
 ATTRIBUTE="0x2000A" # ownerwrite|policywrite|ownerread (0xA0002)
-INPUT_FILE="${CUR_DIR}/nv.data"
 
 LANG=C LC_ALL=C # Needed to measure size of str in bytes 
 

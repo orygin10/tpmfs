@@ -1,17 +1,15 @@
 #!/usr/bin/env python2
 
-from subprocess import Popen, PIPE
 import yaml
 
 from filetable import Filetable
+from interface import Interface
+import os
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
-def launch(bashCommand):
-    process = Popen(bashCommand.split(), stdout=PIPE)
-    stdout, _ = process.communicate()
-
-    return stdout
 
 def test():
+    # Nuke filetable
     with open('filetable.yml', 'w') as f:
         f.write('files:\n')
 
@@ -35,8 +33,11 @@ def test():
         ft.add_file('data.txt', 200)
         assert ft.get_metadata('data.txt'), "Getting metadata for an existing file should not return False"
 
-    #print launch("./tpm.sh -r -i 0x1240000")
-    
+    with Interface() as i:
+        i.push_offset(0, "{}/filetable.yml".format(dir_path))
+        filetable = i.pull_offset(0)
+        print yaml.load(filetable)
+
 def main():
     test()
 
