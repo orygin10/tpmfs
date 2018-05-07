@@ -19,7 +19,7 @@ source "${CUR_DIR}/common.sh"
 source "${CUR_DIR}/api.sh"
 
 # Getopt
-while getopts ":drw:ui:hp:" opt; do
+while getopts ":drw:ui:hp:s:" opt; do
   case $opt in
     d)
       # Define
@@ -40,6 +40,9 @@ while getopts ":drw:ui:hp:" opt; do
     p)
       OWNERPASS="${OPTARG}"
       ;;
+    s)
+      SIZE="${OPTARG}"
+      ;;
     i)
       INDEX="${OPTARG}"
       ;;
@@ -59,17 +62,20 @@ done
 
 function print_usage {
   printf "Usage: %s -[ s|r|w|u ] -i INDEX [-d DATA] \n" "$0" >&2
-  printf "   -s    Define INDEX with attribute WORD on TPM Chip\n" >&2
+  printf "   -d    Define INDEX with attribute WORD on TPM Chip\n" >&2
   printf "   -r    Read 2048 bytes from INDEX\n" >&2
   printf "   -w    Write DATA (up to 2048 bytes) to INDEX\n" >&2
   printf "   -u    Release INDEX\n" >&2
+  printf "   -i    Index; 0x1240000 for exemple\n" >&2
+  printf "   -p    Owner password. Omit to ask\n" >&2
+  printf "   -h    Print this help\n" >&2
   exit 1
 }
 
 [ "$#" -eq 0 ] || [ ! -z ${BOOL_HELP+x} ] \
   && print_usage && exit 1
 
-[ -z ${OWNERPASS+x} ] && OWNERPASS="$(_askpass)" || exit 1
+[ -z ${OWNERPASS+x} ] && OWNERPASS="$(_askpass)"
 [ -z ${SIZE+x} ] && SIZE=2048
 
 [ ! -z ${BOOL_DEFINE+x} ] && [ ! -z ${INDEX+x} ] \
