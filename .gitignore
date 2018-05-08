@@ -1,2 +1,4 @@
 nv.*
 *.swp
+__pycache__/*
+*.pyc

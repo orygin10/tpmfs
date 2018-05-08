@@ -19,7 +19,7 @@ source "${CUR_DIR}/common.sh"
 source "${CUR_DIR}/api.sh"
 
 # Getopt
-while getopts ":drw:ui:hp:s:" opt; do
+while getopts ":df:rw:ui:hp:s:" opt; do
   case $opt in
     d)
       # Define
@@ -45,6 +45,9 @@ while getopts ":drw:ui:hp:s:" opt; do
       ;;
     i)
       INDEX="${OPTARG}"
+      ;;
+    f)
+      INPUT_FILE="${OPTARG}"
       ;;
     h)
       BOOL_HELP=1
@@ -84,7 +87,12 @@ function print_usage {
   && exit 0
 
 [ ! -z ${INPUT_DATA+x} ] && [ ! -z ${INDEX+x} ] \
+  && INPUT_FILE="${CUR_DIR}/nv.data" \
   && _write \
+  && exit 0
+
+[ ! -z ${INPUT_FILE+x} ] && [ ! -z ${INDEX+x} ] \
+  && _write_file \
   && exit 0
 
 [ ! -z ${BOOL_READ+x} ] && [ ! -z ${INDEX+x} ] \
