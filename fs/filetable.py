@@ -2,39 +2,40 @@
 import yaml
 from operator import itemgetter
 from common import print_success, print_failure, print_info
+import os
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
+class FTError(Exception):
+    pass
 
 class Filetable:
-    def __init__(self):
-        self.files = []
-        self.yml = None
-
-    def __enter__(self):
-        with open('filetable.yml', 'r') as fd:
-            self.yml = yaml.load(fd)
+    def __init__(self, yml_plain):
+        self.yml = yaml.load(yml_plain)
         try:
             self.files = sorted(self.yml['files'], key=itemgetter('id'))
         except TypeError: # filetable.yml is empty
             self.files = []
+
+    def __enter__(self):
         return self
 
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
 ##################################
-        
+    def update_yml(self):
+        self.yml['files'] = self.files
+        yaml.dump(self.yml)
+        return self.yml
+
     def list_files(self):
         """Make a list with all files in filetable.yml
-        Returns True if there are files, else return False
+        Returns True if there are files, else raise FTError
         e.g:
-        >>> len(self.files)
-        2
-        >>> list_files()
-        True
-        >>> len(self.files)
-        0
-        >>> list_files()
-        False
         """
         if len(self.files) == 0:
-            return False
+            raise FTError("There are no files")
+
         header = self.files[0].keys()
         print '\t'.join([el.title() for el in header])
         for _file in self.files:
@@ -43,19 +44,14 @@ class Filetable:
 
     def add_file(self, filename, size_bytes):
         """Add file to filetable.yml
-        Returns True if file successfully added, False if file already exists
+        Returns True if file successfully added, raise FTError if file already exists
         e.g:
-        >>> add_file('not_existing.txt')
-        True
-        >>> add_file('existing.txt')
-        False
         """
         block_size = 2048
 
         for f in self.files:
             if f['filename'] == filename:
-                print_failure("%s already exists" % filename)
-                return False
+                raise FTError("{0} already exists".format(filename))
         try:
             lastfile = self.files[-1]
             _id = lastfile['id'] + 1
@@ -104,12 +100,3 @@ class Filetable:
             if _file['filename'] == filename:
                 return _file
         return False
-
-##################################
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        # Cleanup
-        self.yml['files'] = self.files
-        with open('filetable.yml', 'w') as fd:
-            yaml.dump(self.yml, fd)
-        
