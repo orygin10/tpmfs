@@ -21,7 +21,7 @@ class Tests(unittest.TestCase):
         except InterfaceError:
             pass
         # FT with file named data
-        self.ft_f_data = Filetable("{'files': [{'offset': 1, 'size_h': 200, 'id': 0, 'size_b': 1, 'filename': 'data'}]}")
+        self.ft_f_data = Filetable("{'files': [{'offset': 1, 'size_h': 2048, 'id': 0, 'size_b': 1, 'filename': 'data'}]}")
         
     def test_0_interface_pull_filetable_error(self):
         # Should raise bc there is no filetable in index 0
@@ -66,7 +66,8 @@ class Tests(unittest.TestCase):
         """Add a non-existing file
         Should not raise FTError because file does not exist in ft"""
         try:
-            self.ft_f_data.add_file('data2', 200)
+            offset = self.ft_f_data.add_file('data2', 200)
+            self.assertEqual(offset, 2)
         except FTError:
             self.fail()
 

@@ -37,10 +37,9 @@ class Filetable:
             ret += '\n' + '\t'.join([ str(_file[key]) for key in _file.keys() ])
         return ret
 
-    def add_file(self, filename, size_bytes):
+    def add_file(self, filename, size_blocks):
         """Add file to filetable.yml
-        Returns True if file successfully added, raise FTError if file already exists
-        e.g:
+        Returns offset if file successfully added, raise FTError if file already exists
         """
         block_size = 2048
 
@@ -55,10 +54,10 @@ class Filetable:
             _id = 0
             offset = 1 # Offset 0 is 0x1500000 (Filetable index)
         finally:
-            size = int(size_bytes / block_size) + (size_bytes % block_size > 0)
+            size_bytes = size_blocks * block_size
 
-        self.yml['files'].append({'size_b': size, 'size_h': size_bytes, 'filename': filename, 'offset': offset, 'id': _id})
-        return True
+        self.yml['files'].append({'size_b': size_blocks, 'size_h': size_bytes, 'filename': filename, 'offset': offset, 'id': _id})
+        return offset
 
     def remove_file(self, filename):
         """Remove file from filetable.yml
