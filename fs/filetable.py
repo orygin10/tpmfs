@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 import yaml
 from operator import itemgetter
-from common import print_success, print_failure, print_info
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -11,10 +10,7 @@ class FTError(Exception):
 class Filetable:
     def __init__(self, yml_plain):
         self.yml = yaml.load(yml_plain)
-        try:
-            self.yml['files'] = sorted(self.yml['files'], key=itemgetter('id'))
-        except TypeError: # filetable.yml is empty
-            self.yml['files'] = []
+        self.yml['files'] = sorted(self.yml['files'], key=itemgetter('id'))
 
     def __enter__(self):
         return self
@@ -67,11 +63,6 @@ class Filetable:
     def remove_file(self, filename):
         """Remove file from filetable.yml
         Return True if file successfully removed, False if file is not found or table empty
-        e.g:
-        >>> remove_file('existing.txt')
-        True
-        >>> remove_file('not_existing.txt')
-        False
         """
 
         if len(self.yml['files']) == 0:
@@ -80,7 +71,6 @@ class Filetable:
         for n, _file in enumerate(self.yml['files']):
             if _file['filename'] == filename:
                 self.yml['files'].pop(n)
-                print_success("Removed file %s" % filename)
                 return True
 
         raise FTError("File {0} was not found".format(filename))

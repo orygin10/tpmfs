@@ -2,9 +2,9 @@
 from filetable import Filetable, FTError
 from interface import Interface, InterfaceError
 import os
+import sys
 import yaml
 dir_path = os.path.dirname(os.path.realpath(__file__))
-
 
 class FS:
     def __init__(self):
@@ -12,8 +12,7 @@ class FS:
         try:
             ft_content_plain = self.i.pull_offset(0)
         except InterfaceError:
-            self.write_to_tmp("files: []\n", "filetable.yml")
-            self.i.push_offset(0, "{0}/tmp/filetable.yml".format(dir_path))
+            self.i.push_offset(0, "files: []\n")
             ft_content_plain = self.i.pull_offset(0)
 
         self.ft = Filetable(ft_content_plain)

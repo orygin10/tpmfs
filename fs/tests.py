@@ -32,9 +32,7 @@ class Tests(unittest.TestCase):
         """Write empty filetable to TPM, then pull it
         it should not raise InterfaceError since it exists
         """
-        with open('{0}/tmp/filetable.yml'.format(dir_path), 'w') as fd:
-            fd.write(self.ft_empty_content)
-        self.i.push_offset(0, '{0}/tmp/filetable.yml'.format(dir_path))
+        self.i.push_offset(0, self.ft_empty_content)
         try:
             ft_content = self.i.pull_offset(0)
             self.assertEqual(ft_content, self.ft_empty_content)

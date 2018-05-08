@@ -1,8 +1,8 @@
 #!/usr/bin/env python2
 from subprocess import Popen, PIPE
 import os
-import sys
 import re
+from common import print_stderr
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 def bash(bashCommand, debug = False):
@@ -24,11 +24,9 @@ class InterfaceError(Exception):
 
 class Interface:
     def __init__(self):
-        sys.stderr.write('Enter password : ')
-        sys.stderr.flush()
+        print_stderr('Enter password : ')
         self.password = raw_input()
-        sys.stderr.write('\n')
-        sys.stderr.flush()
+        print_stderr('\n')
 
     def __enter__(self):
         return self
@@ -38,18 +36,18 @@ class Interface:
 
     ##########################
 
-    def push_offset(self, offset, file_path):
-        """Write 2048-bytes file into TPM at chosen offset"""
+    def push_offset(self, offset, data):
+        """Write 2048-bytes into TPM at chosen offset"""
+        buf_path = '{0}/tmp/buffer'.format(dir_path)
         try:
-            with open(file_path, "r") as fd:
-                if fd.read() is None:
-                    raise InterfaceError("File {0} is empty".format(file_path))
+            with open(buf_path, 'w') as fd:
+                fd.write(data)
         except IOError:
-            raise InterfaceError("File {0} does not exist".format(file_path))
+            raise InterfaceError("File {0} cannot be opened".format(buf_path))
 
         start = 1500000
         bash("tpm.sh -di 0x{0} -p {1}".format(start+offset, self.password))
-        _, rc = bash("tpm.sh -i 0x{0} -p {1} -f {2}".format(start+offset, self.password, file_path))
+        _, rc = bash("tpm.sh -i 0x{0} -p {1} -f {2}".format(start+offset, self.password, buf_path))
         if rc == 0:
             return True
         raise InterfaceError("Cannot push to offset {0}".format(offset))
