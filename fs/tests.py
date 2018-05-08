@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 from filetable import Filetable, FTError
 from interface import Interface, InterfaceError
+from fs import FS, FSError
 import os
 import sys
 import yaml
@@ -26,7 +27,7 @@ class Tests(unittest.TestCase):
     def test_0_interface_pull_filetable_error(self):
         # Should raise bc there is no filetable in index 0
         with self.assertRaises(InterfaceError):
-            self.i.pull_offset(0)
+            self.i.pull_offset(0, 2048).replace('\0', '')
 
     def test_1_interface_pull_filetable(self):
         """Write empty filetable to TPM, then pull it
@@ -34,7 +35,7 @@ class Tests(unittest.TestCase):
         """
         self.i.push_offset(0, self.ft_empty_content)
         try:
-            ft_content = self.i.pull_offset(0)
+            ft_content = self.i.pull_offset(0, 2048).replace('\0', '')
             self.assertEqual(ft_content, self.ft_empty_content)
         except InterfaceError:
             self.fail()
@@ -60,13 +61,13 @@ class Tests(unittest.TestCase):
         Should raise FTError since there is already an file with the
         same name in filetable yml"""
         with self.assertRaises(FTError):
-            self.ft_f_data.add_file('data', 200)
+            self.ft_f_data.add_file('data', 2, 4000)
 
     def test_13_filetable_add_file(self):
         """Add a non-existing file
         Should not raise FTError because file does not exist in ft"""
         try:
-            offset = self.ft_f_data.add_file('data2', 200)
+            offset = self.ft_f_data.add_file('data2', 2, 400)
             self.assertEqual(offset, 2)
         except FTError:
             self.fail()
@@ -97,6 +98,34 @@ class Tests(unittest.TestCase):
         try:
             self.ft_f_data.get_metadata('data')
         except FTError:
+            self.fail()
+
+    def test_20_fs_push_nonexisting_file(self):
+        """Push a file which does not exist on host
+        Should raise FSError
+        """
+        try:
+            os.remove('/tmp/not_exist')
+        except OSError:
+            pass
+
+        with self.assertRaises(FSError):
+            with FS(self.i) as fs:
+                fs.push('/tmp/not_exist')
+
+    def test_21_fs_push_file(self):
+        """Push a file which exists on host
+        Should not raise FSError"""
+        try:
+            with open('/tmp/i_do_exist', 'w') as f:
+                f.write('hello')
+        except OSError:
+            self.fail('Cannot write file to host :(')
+        
+        try:
+            with FS(self.i) as fs:
+                fs.push('/tmp/i_do_exist')
+        except FSError:
             self.fail()
 
 if __name__=='__main__':

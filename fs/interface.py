@@ -40,7 +40,7 @@ class Interface:
         """Write 2048-bytes into TPM at chosen offset"""
         buf_path = '{0}/tmp/buffer'.format(dir_path)
         try:
-            with open(buf_path, 'w') as fd:
+            with open(buf_path, 'wb') as fd:
                 fd.write(data)
         except IOError:
             raise InterfaceError("File {0} cannot be opened".format(buf_path))
@@ -52,29 +52,15 @@ class Interface:
             return True
         raise InterfaceError("Cannot push to offset {0}".format(offset))
 
-    def pull_offset(self, offset):
-        """Write 2048-bytes file into TPM at chosen offset"""
+    def pull_offset(self, offset, size_bytes):
+        """Read 2048 bytes from TPM"""
+        if not 0 < size_bytes <= 2048:
+            raise InterfaceError("size must be between 1 and 2048 bytes")
         start = 1500000
         data, rc = bash("tpm.sh -i 0x{0} -p {1} -r".format(start+offset, self.password))
         if rc == 0:
-            return str(data).replace('\0', '')
+            return data
         raise InterfaceError("Cannot pull from offset {0}".format(offset))
-
-    def push(self):
-        """Store a file into TPM Chip"""
-        # Write into filetable
-
-
-        # Push into TPM
-        pass
-
-    def pull(self):
-        """Load a file from TPM Chip"""
-        pass
-
-    def delete(self):
-        """Nuke a file in TPM Chip"""
-        pass
 
     def release_offset(self, offset):
         """Release an offset on TPM, raises InterfaceError if release fails"""

@@ -19,8 +19,8 @@ class Filetable:
         pass
 
 ##################################
-    def update_yml(self):
-        self.yml['files'] = self.files
+    def as_str(self):
+        return yaml.dump(self.yml)
 
     def list_files(self):
         """Make a list with all files in filetable.yml
@@ -37,7 +37,7 @@ class Filetable:
             ret += '\n' + '\t'.join([ str(_file[key]) for key in _file.keys() ])
         return ret
 
-    def add_file(self, filename, size_blocks):
+    def add_file(self, filename, size_blocks, size_bytes):
         """Add file to filetable.yml
         Returns offset if file successfully added, raise FTError if file already exists
         """
@@ -53,8 +53,6 @@ class Filetable:
         except IndexError: # File table empty
             _id = 0
             offset = 1 # Offset 0 is 0x1500000 (Filetable index)
-        finally:
-            size_bytes = size_blocks * block_size
 
         self.yml['files'].append({'size_b': size_blocks, 'size_h': size_bytes, 'filename': filename, 'offset': offset, 'id': _id})
         return offset
